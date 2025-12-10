@@ -21,6 +21,15 @@ function operations() {
         
         if (action === 'Create Account') {
             createAccount();
+        } else if (action === 'Check Balance') {
+
+        } else if (action === 'Deposit') {
+
+        } else if (action === 'Cash Out') {
+
+        } else if (action === 'Logout') {
+            console.log(chalk.bgBlue.black('Thanks you for using Accounts!'));
+            process.exit();
         }
     })
     .catch((err) => console.log(chalk.bgRed(err)));
