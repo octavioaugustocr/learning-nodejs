@@ -13,7 +13,7 @@ function operations() {
             type: 'list',
             name: 'action',
             message: 'What do you want to do?',
-            choices: ['Create Account', 'Check Balance', 'Deposit', 'Cash Out', 'Logout']
+            choices: ['Create Account', 'Check Balance', 'Deposit', 'Cash Out', 'Transfer', 'Logout']
         }
     ])
     .then((answer) => {
@@ -27,6 +27,8 @@ function operations() {
             deposit();
         } else if (action === 'Cash Out') {
             withdraw();
+        } else if (action === 'Transfer') {
+            transfer();
         } else if (action === 'Logout') {
             console.log(chalk.bgBlue.black('Thanks you for using Accounts!'));
             process.exit();
@@ -227,4 +229,88 @@ function removeAmount(accountName, amount) {
 
     console.log(chalk.green(`Withdrawal of $${amount} successfully completed!`));
     operations();
+}
+
+function transfer() {
+    inquirer.prompt([
+        {
+            name: 'payer',
+            message: "What is the name of payer's account?"
+        }
+    ])
+    .then((answer) => {
+        const payer = answer['payer'];
+
+        // verify if payer's account exists
+        if (!checkAccount(payer)) {
+            return transfer();
+        }
+
+        inquirer.prompt([
+            {
+                name: 'payee',
+                message: 'What is the name account of payee?'
+            }
+        ])
+        .then((answer) => {
+            const payee = answer['payee'];
+
+            // verify if payee account exists
+            if (!checkAccount(payee)) {
+                return transfer();
+            }
+
+            finishingTransfer(payer, payee);
+        })
+        .catch(err => console.log(chalk.bgRed(err)));
+    })
+    .catch(err => console.log(chalk.bgRed(err)));
+}
+
+function finishingTransfer(payer, payee) {
+    inquirer.prompt([
+        {
+            name: 'amount',
+            message: 'How much amount do you want to transfer?'
+        }
+    ])
+    .then((answer) => {
+        const amount = answer['amount'];
+
+        if (!amount) {
+            console.log(chalk.bgRed('An error occurred, please try again later!'))
+            return transfer();
+        }
+
+        const payerData = getAccount(payer);
+        const payeeData = getAccount(payee);
+
+        if (payerData.balance < amount) {
+            console.log(chalk.bgRed('Value unavailable!'));
+            return transfer();
+        }
+
+        payerData.balance = parseFloat(payerData.balance) - parseFloat(amount);
+        payeeData.balance = parseFloat(payeeData.balance) + parseFloat(amount);
+
+        fs.writeFileSync(
+            `accounts/${payer}.json`,
+            JSON.stringify(payerData),
+            function (err) {
+                console.log(chalk.bgRed.black(err))
+            }
+        );
+
+        fs.writeFileSync(
+            `accounts/${payee}.json`,
+            JSON.stringify(payeeData),
+            function (err) {
+                console.log(chalk.bgRed.black(err))
+            }
+        )
+
+        console.log(chalk.green('Transfer completed successfully!'));
+        operations();
+    })
+    .catch(err => console.log(chalk.bgRed(err)))
 }
