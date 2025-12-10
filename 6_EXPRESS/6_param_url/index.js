@@ -3,22 +3,16 @@ const app = express();
 const port = 3000;
 
 const path = require('path');
-
 const basePath = path.join(__dirname, 'templates');
 
-const checkAuth = function(req, res, next) {
-    req.authStatus = true;
+app.get('/users/:id', (req, res) => {
+    const id = req.params.id;
 
-    if (req.authStatus) {
-        console.log('Authorized!')
-        next();
-    } else {
-        console.log('Unauthorized!');
-        next();
-    }
-};
+    // read users table, getting user by id
+    console.log(`Searching user by ID: ${id}`);
 
-app.use(checkAuth)
+    res.sendFile(`${basePath}/users.html`);
+});
 
 app.get('/', (req, res) => {
     res.sendFile(`${basePath}/index.html`);
@@ -27,4 +21,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
     console.log(`http://localhost:${port}`);
-})
+});
