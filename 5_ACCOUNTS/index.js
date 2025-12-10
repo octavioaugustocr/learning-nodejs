@@ -26,7 +26,7 @@ function operations() {
         } else if (action === 'Deposit') {
             deposit();
         } else if (action === 'Cash Out') {
-
+            withdraw();
         } else if (action === 'Logout') {
             console.log(chalk.bgBlue.black('Thanks you for using Accounts!'));
             process.exit();
@@ -168,4 +168,63 @@ function getAccountBalance() {
         operations();
     })
     .catch(err => console.log(chalk.bgRed(err)));
+}
+
+// withdraw an amount from user account
+function withdraw() {
+    inquirer.prompt([
+        {
+            name: 'accountName',
+            message: 'What is your account name?'
+        }
+    ])
+    .then((answer) => {
+        const accountName = answer['accountName'];
+
+        // verify if account exists
+        if (!checkAccount(accountName)) {
+            return withdraw();
+        }
+
+        inquirer.prompt([
+            {
+                name: 'amount',
+                message: 'How much do you want to withdraw?'
+            }
+        ])
+        .then((answer) => {
+            const amount = answer['amount'];
+
+            removeAmount(accountName, amount);
+        })
+        .catch(err => console.log(chalk.bgRed(err)));
+    })
+    .catch(err => console.log(chalk.bgRed(err)));
+}
+
+function removeAmount(accountName, amount) {
+    const accountData = getAccount(accountName);
+
+    if (!amount) {
+        console.log(chalk.bgRed('An error occurred, please try again later!'));
+        return withdraw();
+    }
+
+    if (accountData.balance < amount) {
+        console.log(chalk.bgRed.black('Value unavailable!'))
+        return withdraw();
+    }
+
+    accountData.balance = parseFloat(accountData.balance) - parseFloat(amount);
+
+    fs.writeFileSync(
+        `accounts/${accountName}.json`,
+        JSON.stringify(accountData),
+        function(err) {
+            console.log(chalk.bgRed(err))
+        }
+    );
+
+    console.log(chalk.green(`Withdrawal of $${amount} successfully completed!`));
+    operations();
 }
