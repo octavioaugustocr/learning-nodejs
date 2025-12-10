@@ -22,7 +22,7 @@ function operations() {
         if (action === 'Create Account') {
             createAccount();
         } else if (action === 'Check Balance') {
-
+            getAccountBalance();
         } else if (action === 'Deposit') {
             deposit();
         } else if (action === 'Cash Out') {
@@ -143,4 +143,29 @@ function getAccount(accountName) {
     });
 
     return JSON.parse(accountJSON);
+}
+
+// show account balance
+function getAccountBalance() {
+    inquirer.prompt([
+        {
+            name: 'accountName',
+            message: 'What is your account name?'
+        }
+    ])
+    .then((answer) => {
+        const accountName = answer['accountName'];
+
+        // verify if account exists
+        if (!checkAccount(accountName)) {
+            return getAccountBalance();
+        }
+
+        const accountData = getAccount(accountName);
+
+        console.log(chalk.bgBlue.black(`The balance of this account is: ${accountData.balance}`));
+
+        operations();
+    })
+    .catch(err => console.log(chalk.bgRed(err)));
 }
