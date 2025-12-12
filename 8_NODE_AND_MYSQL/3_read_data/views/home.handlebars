@@ -1,0 +1,12 @@
+<h1>Register your book: </h1>
+<form action="/books/insertbook" method="post" class="form">
+    <div class="form-control">
+        <label for="title">Title: </label>
+        <input type="text" name="title" placeholder="Provide a title">
+    </div>
+    <div class="form-control">
+        <label for="pageqty">Page Quantity: </label>
+        <input type="number" min="0" step="1" name="pageqty" placeholder="Provide a page quantity">
+    </div>
+    <button type="submit">Register</button>
+</form>

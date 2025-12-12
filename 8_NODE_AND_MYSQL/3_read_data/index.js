@@ -1,0 +1,69 @@
+const express = require('express');
+const app = express();
+const exphbs = require('express-handlebars');
+const mysql = require('mysql2');
+const port = 3000;
+
+const hbs = exphbs.create({ partialsDir: ['/views/partial'] });
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+const conn = mysql.createConnection({
+    host: 'localhost',
+    database: 'nodemysql1',
+    user: 'root',
+    password: ''
+});
+
+conn.connect(function(err) {
+    if (err) {
+        console.log(err);
+    }
+
+    app.listen(port, () => {
+        console.log(`Server running on port: ${port}`);
+        console.log(`http://localhost:${port}`);
+    })
+});
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json());
+
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+    res.render('home');
+});
+
+app.get('/books', (req, res) => {
+    const sql = `SELECT * FROM books`;
+
+    conn.query(sql, function(err, data) {
+        if (err) {
+            console.log(err);
+        }
+
+        const books = data;
+
+        console.log(books);
+
+        res.render('books', { books });
+    });
+});
+
+app.post('/books/insertbook', (req, res) => {
+    const title = req.body.title;
+    const pageqty = req.body.pageqty;
+
+    const sql = `INSERT INTO books (title, pageqty) VALUES ('${title}', '${pageqty}')`;
+
+    conn.query(sql, function(err) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.redirect('/');
+    });
+});
