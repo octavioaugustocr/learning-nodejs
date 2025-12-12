@@ -1,0 +1,14 @@
+{{#with book}}
+<div>
+    <input type="number" disabled value="{{this.id}}">
+</div>
+<div>
+    <input type="text" disabled value="{{this.title}}">
+</div>
+<div>
+    <input type="number" disabled value="{{this.pageqty}}">
+</div>
+{{/with}}
+
+<button><a href="/">Register new book</a></button>
+<button><a href="/books">View books</a></button>
