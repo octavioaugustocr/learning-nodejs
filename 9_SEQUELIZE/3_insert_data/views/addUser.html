@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+</head>
+<body>
+    <h1>Register User:</h1>
+    <form action="/user/add" method="post">
+        <div>
+            <label for="name">Name: </label>
+            <input type="text" name="name" placeholder="Provide a name">
+        </div>
+        <div>
+            <label for="occupation">Occupation: </label>
+            <input type="text" name="occupation" placeholder="Provide a occupation">
+        </div>
+        <div>
+            <input type="checkbox" name="newsletter" checked>
+            <label for="newsletter">Send promotions?</label>
+        </div>
+        <button type="submit">Add</button>
+        <a href="/">Back</a>
+    </form>
+</body>
+</html>
