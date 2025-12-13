@@ -1,0 +1,12 @@
+<form class="w-50" action="/edit/{{book.id}}" method="post">
+    <div class="form-group">
+        <label for="title">Title: </label>
+        <input type="text" name="title" class="form-control" value="{{book.title}}">
+    </div>
+    <div class="form-group">
+        <label for="pageqty">Title: </label>
+        <input type="number" name="pageqty" class="form-control" value="{{book.pageqty}}">
+    </div>
+    <button type="submit" class="btn btn-primary">Edit</button>
+    <a href="/" class="btn btn-secondary">Back</a>
+</form>
